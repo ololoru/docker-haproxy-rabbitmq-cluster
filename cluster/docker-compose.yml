@@ -1,0 +1,33 @@
+rabbit1:
+  image: rabbitmq-base
+  hostname: rabbit1
+
+rabbit2:
+  image: rabbitmq-base
+  hostname: rabbit2
+  links:
+    - rabbit1
+  environment:
+    - RAM_NODE=1
+    - CLUSTER_WITH=rabbit1
+
+rabbit3:
+  image: rabbitmq-base
+  hostname: rabbit3
+  links:
+    - rabbit1
+    - rabbit2
+  environment: 
+    - RAM_NODE=1
+    - CLUSTER_WITH=rabbit1
+
+
+haproxy1:
+  image: rabbit-haproxy
+  links:
+    - rabbit1
+    - rabbit2
+    - rabbit3
+  ports:
+    - "5672:5672"
+    - "15672:15672"
